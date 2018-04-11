@@ -138,7 +138,6 @@
         }else{
           this.removeFromBasket(item);
         }
-
       },
       increaseQuantity(item){
         item.quantity++;
