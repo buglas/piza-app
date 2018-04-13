@@ -32,6 +32,11 @@
         curMenu:mns[0],
       }
     },
+    //组件内守卫
+    beforeRouteEnter:(to,fron,next)=>{
+      // vm 就是this
+      next(vm=>vm.$store.commit('setCurrentRoute','about'));
+    },
     methods:{
       cliMenu:function(menu){
         let {curMenu,menus}=this.$data;

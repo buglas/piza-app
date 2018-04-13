@@ -9,7 +9,7 @@
             <th>加入</th>
           </tr>
         </thead>
-        <tbody v-for="(item,itemInd) in menuItems" :key="itemInd">
+        <tbody v-for="(item,itemInd) in getMenuItems" :key="itemInd">
           <tr>
             <td><strong>{{item.name}}</strong></td>
           </tr>
@@ -64,44 +64,21 @@
       return{
         baskets:[],
         basketText:'购物车没有物品',
-        menuItems:{
-          1: {
-            'name': '榴莲pizza',
-            'description': '这是喜欢吃榴莲朋友的最佳选择',
-            'options': [{
-              'size': 9,
-              'price': 38
-            }, {
-              'size': 12,
-              'price': 48
-            }]
-          },
-          2: {
-            'name': '芝士pizza',
-            'description': '芝士杀手,浓浓的芝士丝, 食欲瞬间爆棚',
-            'options': [{
-              'size': 9,
-              'price': 38
-            }, {
-              'size': 12,
-              'price': 48
-            }]
-          },
-          3: {
-            'name': '夏威夷pizza',
-            'description': '众多人的默认选择',
-            'options': [{
-              'size': 9,
-              'price': 36
-            }, {
-              'size': 12,
-              'price': 46
-            }]
-          }
-        }
+        //menuItems:{}
       }
     },
+    //组件内守卫
+    beforeRouteEnter:(to,fron,next)=>{
+      // vm 就是this
+      next(vm=>vm.$store.commit('setCurrentRoute','menu'));
+    },
     computed:{
+      getMenuItems(){
+        //从vuex 中获取数据
+        //return this.$store.state.menuItems;
+        //通过getters 获取数据
+        return this.$store.getters.getMenuItems;
+      },
       total(){
         let totalCost=0;
         for(let key in this.baskets){
@@ -111,7 +88,20 @@
         return totalCost;
       }
     },
+    created(){
+      this.fetchData();
+    },
     methods:{
+      fetchData(){
+        fetch('https://wd2468178309upkmpi.wilddogio.com/menu.json')
+          .then(res=>res.json())
+          .then(data=>{
+            //this.menuItems=data;
+            // 将请求数据存储到vuex 中
+            this.$store.commit('setMenuItems',data);
+          })
+          .catch(err=>console.error(err));
+      },
       addToBasket(item,option){
         let basket={
           name:item.name,

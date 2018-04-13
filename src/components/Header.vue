@@ -15,15 +15,23 @@
           </a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li v-for="(menu,ind) in leftMenus" :class="{ active: menu.act }" v-on:click="cliMenu(menu)" :key="ind">
+            <li v-for="(menu,ind) in leftMenus" :class="{active:(menu.name==currentRoute) }" :key="ind">
               <router-link :to="{name:menu.name}">{{menu.name}}</router-link>
             </li>
           </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li v-for="(menu,ind) in rightMenus"  :class="{ active: menu.act }" v-on:click="cliMenu(menu)" :key="ind">
+          <ul class="nav navbar-nav navbar-right" v-show="!isLogin">
+            <li v-for="(menu,ind) in rightMenus"  :class="{active:(menu.name==currentRoute)}" :key="ind">
               <router-link :to="{name:menu.name}">{{menu.name}}</router-link>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right" v-show="isLogin">
+            <li class="nav-link">
+              <a>{{currentUser}}</a>
+            </li>
+            <li class="nav-link">
+              <router-link :to="{name:'login'}">退出</router-link>
             </li>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -45,6 +53,17 @@
         rightMenus:[
           {name:'login',txt:'登陆',act:false},
           {name:'register',txt:'注册',act:false}],
+      }
+    },
+    computed:{
+      currentUser(){
+        return this.$store.getters.currentUser;
+      },
+      isLogin(){
+        return this.$store.getters.isLogin;
+      },
+      currentRoute(){
+        return this.$store.getters.currentRoute;
       }
     },
     methods: {

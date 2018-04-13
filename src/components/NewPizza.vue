@@ -65,7 +65,8 @@
           body:JSON.stringify(this.newPizza)
         })
           .then(res=>res.json())
-          .then(data=>this.$router.push({name:'menu'}))
+          //.then(data=>this.$router.push({name:'menu'}))
+          .then(data=>this.$store.commit('pushToMenuItems',this.newPizza))
           .catch(err=>console.error(err))
       }
     }

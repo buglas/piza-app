@@ -15,6 +15,14 @@
         this.$router.push({name:'menu'})
       }
     },
+    //组件内守卫
+    beforeRouteEnter:(to,fron,next)=>{
+      // vm 就是this
+      next(vm=>vm.$store.commit('setCurrentRoute','home'));
+    },
+    computed:{
+
+    },
     props: [],
   }
 </script>

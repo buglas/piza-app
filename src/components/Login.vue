@@ -29,10 +29,19 @@
         tip:null,
       }
     },
+    //组件内守卫
+    beforeRouteEnter:(to,fron,next)=>{
+      // vm 就是this
+      next(vm=>{
+        localStorage.removeItem('email');
+        localStorage.removeItem('password');
+        vm.$store.dispatch('setUser',null);
+        vm.$store.commit('setCurrentRoute','login');
+      });
+    },
     methods:{
       onSubmit(){
         const bodyData=`username=${this.email}&password=${this.password}&ans='right'`
-        console.log(bodyData);
         fetch('http://localhost:8080/mvc/doLogin.do', {
           method: 'POST',
           headers: {
@@ -43,8 +52,13 @@
           .then((response)=>response.text())
           .then((responseText)=>{
             if(responseText==='right'){
+              localStorage.email=this.email;
+              localStorage.password=this.password;
+
+              this.$store.dispatch('setUser',this.email);
               this.$router.push({name:'home'});
             }else{
+              this.$store.dispatch('setUser',null);
               this.tip='邮箱或密码错误！'
             }
           })
